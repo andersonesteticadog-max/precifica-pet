@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>PrecificaPet</title>
+    <style>
+        body { font-family: sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+        h1 { font-size: 1.4rem; }
+        label { display: block; margin-top: 12px; font-size: 0.9rem; }
+        input { width: 100%; padding: 6px; box-sizing: border-box; }
+        button { margin-top: 20px; padding: 10px 16px; }
+        .resultado { margin-top: 30px; padding: 16px; background: #f0f0f0; border-radius: 6px; }
+        .resultado p { margin: 6px 0; }
+        .destaque { font-weight: bold; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <h1>PrecificaPet</h1>
+    <p>Quanto custa cada atendimento pro seu negocio?</p>
+
+    <form method="post">
+        <label>Aluguel mensal (R$)
+            <input type="number" step="0.01" name="aluguel_mensal" required>
+        </label>
+        <label>Agua + luz mensal (R$)
+            <input type="number" step="0.01" name="agua_luz_mensal" required>
+        </label>
+        <label>Dias abertos por mes
+            <input type="number" step="1" name="dias_abertos_mes" required>
+        </label>
+        <label>Horas de funcionamento por dia
+            <input type="number" step="0.5" name="horas_por_dia" required>
+        </label>
+        <label>Custo por hora do funcionario (R$)
+            <input type="number" step="0.01" name="valor_hora_funcionario" required>
+        </label>
+        <label>Duracao do servico (minutos)
+            <input type="number" step="1" name="duracao_servico_min" required>
+        </label>
+        <label>Custo de produtos/insumos usados (R$)
+            <input type="number" step="0.01" name="custo_produtos_insumos" required>
+        </label>
+        <label>Margem de lucro desejada (ex: 0.30 para 30%)
+            <input type="number" step="0.01" name="margem_lucro_desejada" required>
+        </label>
+        <button type="submit">Calcular</button>
+    </form>
+
+    {% if resultado %}
+    <div class="resultado">
+        <p>Custo fixo rateado: R$ {{ "%.2f"|format(resultado.custo_fixo_rateado) }}</p>
+        <p>Custo de mao de obra: R$ {{ "%.2f"|format(resultado.custo_mao_de_obra) }}</p>
+        <p>Custo de produtos/insumos: R$ {{ "%.2f"|format(resultado.custo_produtos_insumos) }}</p>
+        <p class="destaque">Custo total do atendimento: R$ {{ "%.2f"|format(resultado.custo_total) }}</p>
+        <p class="destaque">Preco minimo sugerido: R$ {{ "%.2f"|format(resultado.preco_minimo_sugerido) }}</p>
+    </div>
+    {% endif %}
+</body>
+</html>
