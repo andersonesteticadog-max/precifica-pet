@@ -41,9 +41,9 @@
                     <input type="number" step="0.01" name="valor_hora_funcionario"
                            value="{{ config.valor_hora_funcionario }}" required>
                 </label>
-                <label>Margem de lucro desejada (ex: 0.30 para 30%)
-                    <input type="number" step="0.01" name="margem_lucro_desejada"
-                           value="{{ config.margem_lucro_desejada }}" required>
+                <label>Margem de lucro desejada em % (ex: 30 para 30%)
+                    <input type="number" step="0.1" name="margem_lucro_desejada"
+                           value="{{ (config.margem_lucro_desejada * 100) | round(2) }}" required>
                 </label>
                 <button type="submit">Salvar configuracao</button>
             </fieldset>
@@ -62,8 +62,8 @@
             <label>Custo por hora do funcionario (R$)
                 <input type="number" step="0.01" name="valor_hora_funcionario" required>
             </label>
-            <label>Margem de lucro desejada (ex: 0.30 para 30%)
-                <input type="number" step="0.01" name="margem_lucro_desejada" required>
+            <label>Margem de lucro desejada em % (ex: 30 para 30%)
+                <input type="number" step="0.1" name="margem_lucro_desejada" required>
             </label>
             <button type="submit">Salvar configuracao</button>
         </fieldset>

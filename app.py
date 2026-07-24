@@ -24,7 +24,10 @@ def salvar_configuracao():
         aluguel_mensal=float(request.form["aluguel_mensal"]),
         agua_luz_mensal=float(request.form["agua_luz_mensal"]),
         valor_hora_funcionario=float(request.form["valor_hora_funcionario"]),
-        margem_lucro_desejada=float(request.form["margem_lucro_desejada"]),
+        # O formulario pede a margem em porcentagem "cheia" (ex: 30 para 30%),
+        # mais natural pra digitar - guardamos como fracao (0.30) porque e'
+        # assim que a formula em calculo.py usa.
+        margem_lucro_desejada=float(request.form["margem_lucro_desejada"]) / 100,
     )
     return redirect(url_for("index"))
 
