@@ -48,4 +48,10 @@ def excluir_servico(servico_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # use_reloader=False: o reloader do Flask sobe um processo "pai" que fica
+    # de olho nos arquivos e um "filho" que roda o site de verdade - matar so
+    # um dos dois faz o outro continuar vivo, e isso estava deixando processos
+    # travados na porta 5000 entre testes. Sem o reloader, precisa reiniciar
+    # manualmente apos mudar o codigo Python (templates continuam recarregando
+    # sozinhos, isso nao muda).
+    app.run(debug=True, use_reloader=False)

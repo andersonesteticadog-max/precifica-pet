@@ -18,6 +18,7 @@
         tr.prejuizo { background: #fbe9e9; }
         .aviso { color: #a33; font-weight: bold; }
         .excluir { padding: 2px 8px; font-size: 0.8rem; }
+        summary { cursor: pointer; color: #555; }
     </style>
 </head>
 <body>
@@ -25,49 +26,73 @@
     <p>Quanto custa cada atendimento pro seu negocio, e quanto voce precisa vender pra ter a margem que quer?</p>
 
     <h2>1. Custos fixos do salao</h2>
+    {% if config %}
+    <details>
+        <summary>Ja configurado - clique aqui pra editar</summary>
+        <form method="post" action="{{ url_for('salvar_configuracao') }}">
+            <fieldset>
+                <label>Aluguel mensal (R$)
+                    <input type="number" step="0.01" name="aluguel_mensal" value="{{ config.aluguel_mensal }}" required>
+                </label>
+                <label>Agua + luz mensal (R$)
+                    <input type="number" step="0.01" name="agua_luz_mensal" value="{{ config.agua_luz_mensal }}" required>
+                </label>
+                <label>Custo por hora do funcionario (R$)
+                    <input type="number" step="0.01" name="valor_hora_funcionario"
+                           value="{{ config.valor_hora_funcionario }}" required>
+                </label>
+                <label>Margem de lucro desejada (ex: 0.30 para 30%)
+                    <input type="number" step="0.01" name="margem_lucro_desejada"
+                           value="{{ config.margem_lucro_desejada }}" required>
+                </label>
+                <button type="submit">Salvar configuracao</button>
+            </fieldset>
+        </form>
+    </details>
+    {% else %}
+    <p>Preencha uma vez so - esses custos sao do salao inteiro, nao mudam a cada servico novo.</p>
     <form method="post" action="{{ url_for('salvar_configuracao') }}">
         <fieldset>
             <label>Aluguel mensal (R$)
-                <input type="number" step="0.01" name="aluguel_mensal"
-                       value="{{ config.aluguel_mensal if config else '' }}" required>
+                <input type="number" step="0.01" name="aluguel_mensal" required>
             </label>
             <label>Agua + luz mensal (R$)
-                <input type="number" step="0.01" name="agua_luz_mensal"
-                       value="{{ config.agua_luz_mensal if config else '' }}" required>
+                <input type="number" step="0.01" name="agua_luz_mensal" required>
             </label>
             <label>Custo por hora do funcionario (R$)
-                <input type="number" step="0.01" name="valor_hora_funcionario"
-                       value="{{ config.valor_hora_funcionario if config else '' }}" required>
+                <input type="number" step="0.01" name="valor_hora_funcionario" required>
             </label>
             <label>Margem de lucro desejada (ex: 0.30 para 30%)
-                <input type="number" step="0.01" name="margem_lucro_desejada"
-                       value="{{ config.margem_lucro_desejada if config else '' }}" required>
+                <input type="number" step="0.01" name="margem_lucro_desejada" required>
             </label>
             <button type="submit">Salvar configuracao</button>
         </fieldset>
     </form>
+    {% endif %}
 
+    {% if config %}
     <h2>2. Adicionar tipo de servico</h2>
     <form method="post" action="{{ url_for('adicionar_servico') }}">
         <fieldset>
             <label>Nome (ex: Banho, Tosa Higienica, Tosa na Maquina, Tosa na Tesoura)
                 <input type="text" name="nome" required>
             </label>
-            <label>Duracao (minutos)
+            <label>Tempo medio para executar (minutos)
                 <input type="number" step="1" name="duracao_min" required>
             </label>
             <label>Custo de produtos/insumos por atendimento (R$)
                 <input type="number" step="0.01" name="custo_produtos_insumos" required>
             </label>
-            <label>Preco praticado hoje (R$)
+            <label>Valor atual cobrado (R$)
                 <input type="number" step="0.01" name="preco_praticado" required>
             </label>
-            <label>Quantidade atual por mes (quantos desse tipo voce faz hoje)
+            <label>Quantidade no mes (quantos desse tipo voce faz hoje)
                 <input type="number" step="1" name="quantidade_atual_mes" required>
             </label>
             <button type="submit">Adicionar servico</button>
         </fieldset>
     </form>
+    {% endif %}
 
     <h2>3. Painel dos servicos</h2>
     {% if not config %}
