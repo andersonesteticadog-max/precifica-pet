@@ -4,53 +4,121 @@
     <meta charset="utf-8">
     <title>PrecificaPet</title>
     <style>
-        body { font-family: sans-serif; max-width: 480px; margin: 40px auto; padding: 0 16px; }
+        body { font-family: sans-serif; max-width: 900px; margin: 40px auto; padding: 0 16px; }
         h1 { font-size: 1.4rem; }
-        label { display: block; margin-top: 12px; font-size: 0.9rem; }
+        h2 { font-size: 1.1rem; margin-top: 40px; }
+        fieldset { border: 1px solid #ccc; border-radius: 6px; padding: 12px 16px; margin-top: 10px; }
+        label { display: block; margin-top: 10px; font-size: 0.85rem; }
         input { width: 100%; padding: 6px; box-sizing: border-box; }
-        button { margin-top: 20px; padding: 10px 16px; }
-        .resultado { margin-top: 30px; padding: 16px; background: #f0f0f0; border-radius: 6px; }
-        .resultado p { margin: 6px 0; }
-        .destaque { font-weight: bold; font-size: 1.1rem; }
+        button { margin-top: 16px; padding: 8px 14px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.85rem; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+        th:first-child, td:first-child { text-align: left; }
+        tr.lucrativo { background: #e8f7ec; }
+        tr.prejuizo { background: #fbe9e9; }
+        .aviso { color: #a33; font-weight: bold; }
+        .excluir { padding: 2px 8px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <h1>PrecificaPet</h1>
-    <p>Quanto custa cada atendimento pro seu negocio?</p>
+    <p>Quanto custa cada atendimento pro seu negocio, e quanto voce precisa vender pra ter a margem que quer?</p>
 
-    <form method="post">
-        <label>Aluguel mensal (R$)
-            <input type="number" step="0.01" name="aluguel_mensal" required>
-        </label>
-        <label>Agua + luz mensal (R$)
-            <input type="number" step="0.01" name="agua_luz_mensal" required>
-        </label>
-        <label>Quantidade de atendimentos por mes (todos os tipos de servico)
-            <input type="number" step="1" name="quantidade_atendimentos_mes" required>
-        </label>
-        <label>Custo por hora do funcionario (R$)
-            <input type="number" step="0.01" name="valor_hora_funcionario" required>
-        </label>
-        <label>Duracao do servico (minutos)
-            <input type="number" step="1" name="duracao_servico_min" required>
-        </label>
-        <label>Custo de produtos/insumos usados (R$)
-            <input type="number" step="0.01" name="custo_produtos_insumos" required>
-        </label>
-        <label>Margem de lucro desejada (ex: 0.30 para 30%)
-            <input type="number" step="0.01" name="margem_lucro_desejada" required>
-        </label>
-        <button type="submit">Calcular</button>
+    <h2>1. Custos fixos do salao</h2>
+    <form method="post" action="{{ url_for('salvar_configuracao') }}">
+        <fieldset>
+            <label>Aluguel mensal (R$)
+                <input type="number" step="0.01" name="aluguel_mensal"
+                       value="{{ config.aluguel_mensal if config else '' }}" required>
+            </label>
+            <label>Agua + luz mensal (R$)
+                <input type="number" step="0.01" name="agua_luz_mensal"
+                       value="{{ config.agua_luz_mensal if config else '' }}" required>
+            </label>
+            <label>Custo por hora do funcionario (R$)
+                <input type="number" step="0.01" name="valor_hora_funcionario"
+                       value="{{ config.valor_hora_funcionario if config else '' }}" required>
+            </label>
+            <label>Margem de lucro desejada (ex: 0.30 para 30%)
+                <input type="number" step="0.01" name="margem_lucro_desejada"
+                       value="{{ config.margem_lucro_desejada if config else '' }}" required>
+            </label>
+            <button type="submit">Salvar configuracao</button>
+        </fieldset>
     </form>
 
-    {% if resultado %}
-    <div class="resultado">
-        <p>Custo fixo rateado: R$ {{ "%.2f"|format(resultado.custo_fixo_rateado) }}</p>
-        <p>Custo de mao de obra: R$ {{ "%.2f"|format(resultado.custo_mao_de_obra) }}</p>
-        <p>Custo de produtos/insumos: R$ {{ "%.2f"|format(resultado.custo_produtos_insumos) }}</p>
-        <p class="destaque">Custo total do atendimento: R$ {{ "%.2f"|format(resultado.custo_total) }}</p>
-        <p class="destaque">Preco minimo sugerido: R$ {{ "%.2f"|format(resultado.preco_minimo_sugerido) }}</p>
-    </div>
+    <h2>2. Adicionar tipo de servico</h2>
+    <form method="post" action="{{ url_for('adicionar_servico') }}">
+        <fieldset>
+            <label>Nome (ex: Banho, Tosa Higienica, Tosa na Maquina, Tosa na Tesoura)
+                <input type="text" name="nome" required>
+            </label>
+            <label>Duracao (minutos)
+                <input type="number" step="1" name="duracao_min" required>
+            </label>
+            <label>Custo de produtos/insumos por atendimento (R$)
+                <input type="number" step="0.01" name="custo_produtos_insumos" required>
+            </label>
+            <label>Preco praticado hoje (R$)
+                <input type="number" step="0.01" name="preco_praticado" required>
+            </label>
+            <label>Quantidade atual por mes (quantos desse tipo voce faz hoje)
+                <input type="number" step="1" name="quantidade_atual_mes" required>
+            </label>
+            <button type="submit">Adicionar servico</button>
+        </fieldset>
+    </form>
+
+    <h2>3. Painel dos servicos</h2>
+    {% if not config %}
+        <p class="aviso">Preencha a configuracao do salao (passo 1) primeiro.</p>
+    {% elif not resultados %}
+        <p>Nenhum servico cadastrado ainda.</p>
+    {% else %}
+    <table>
+        <tr>
+            <th>Servico</th>
+            <th>Qtd/mes hoje</th>
+            <th>Preco praticado</th>
+            <th>Custo total</th>
+            <th>Preco minimo</th>
+            <th>Qtd minima/mes</th>
+            <th>Faturamento minimo</th>
+            <th></th>
+        </tr>
+        {% for r in resultados %}
+        <tr class="{{ 'prejuizo' if r.preco_praticado < r.preco_minimo_sugerido else 'lucrativo' }}">
+            <td>{{ r.nome }}</td>
+            <td>{{ r.quantidade_atual_mes }}</td>
+            <td>R$ {{ "%.2f"|format(r.preco_praticado) }}</td>
+            <td>R$ {{ "%.2f"|format(r.custo_total) }}</td>
+            <td>R$ {{ "%.2f"|format(r.preco_minimo_sugerido) }}</td>
+            <td>
+                {% if r.quantidade_minima is not none %}
+                    {{ r.quantidade_minima }}
+                {% else %}
+                    <span class="aviso">impossivel</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if r.faturamento_minimo is not none %}
+                    R$ {{ "%.2f"|format(r.faturamento_minimo) }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                <form method="post" action="{{ url_for('excluir_servico', servico_id=r.id) }}">
+                    <button class="excluir" type="submit">excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><span class="aviso">Linhas vermelhas</span>: o preco praticado esta abaixo do preco minimo sugerido -
+       esse servico esta dando prejuizo (ou lucrando menos que a margem desejada).
+       "impossivel" na quantidade minima significa que o preco praticado nem cobre o custo
+       variavel direto do servico - vender mais nao resolve, o preco precisa subir.</p>
     {% endif %}
 </body>
 </html>
