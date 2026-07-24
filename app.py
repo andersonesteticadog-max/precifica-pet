@@ -44,6 +44,19 @@ def adicionar_servico():
     return redirect(url_for("index"))
 
 
+@app.route("/servicos/<int:servico_id>/editar", methods=["POST"])
+def editar_servico(servico_id):
+    db.editar_servico(
+        servico_id=servico_id,
+        nome=request.form["nome"],
+        duracao_min=float(request.form["duracao_min"]),
+        custo_produtos_insumos=float(request.form["custo_produtos_insumos"]),
+        preco_praticado=float(request.form["preco_praticado"]),
+        quantidade_atual_mes=float(request.form["quantidade_atual_mes"]),
+    )
+    return redirect(url_for("index"))
+
+
 @app.route("/servicos/<int:servico_id>/excluir", methods=["POST"])
 def excluir_servico(servico_id):
     db.excluir_servico(servico_id)

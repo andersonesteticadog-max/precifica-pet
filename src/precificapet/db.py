@@ -75,6 +75,17 @@ def adicionar_servico(nome, duracao_min, custo_produtos_insumos, preco_praticado
     conn.close()
 
 
+def editar_servico(servico_id, nome, duracao_min, custo_produtos_insumos, preco_praticado, quantidade_atual_mes):
+    conn = conectar()
+    conn.execute(
+        "UPDATE servicos SET nome = ?, duracao_min = ?, custo_produtos_insumos = ?, "
+        "preco_praticado = ?, quantidade_atual_mes = ? WHERE id = ?",
+        (nome, duracao_min, custo_produtos_insumos, preco_praticado, quantidade_atual_mes, servico_id),
+    )
+    conn.commit()
+    conn.close()
+
+
 def excluir_servico(servico_id):
     conn = conectar()
     conn.execute("DELETE FROM servicos WHERE id = ?", (servico_id,))

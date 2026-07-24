@@ -133,6 +133,29 @@
                 {% endif %}
             </td>
             <td>
+                <details>
+                    <summary class="excluir">editar</summary>
+                    <form method="post" action="{{ url_for('editar_servico', servico_id=r.id) }}">
+                        <label>Nome
+                            <input type="text" name="nome" value="{{ r.nome }}" required>
+                        </label>
+                        <label>Tempo medio (minutos)
+                            <input type="number" step="1" name="duracao_min" value="{{ r.duracao_min }}" required>
+                        </label>
+                        <label>Custo de produtos/insumos (R$)
+                            <input type="number" step="0.01" name="custo_produtos_insumos"
+                                   value="{{ r.custo_produtos_insumos }}" required>
+                        </label>
+                        <label>Valor atual cobrado (R$)
+                            <input type="number" step="0.01" name="preco_praticado" value="{{ r.preco_praticado }}" required>
+                        </label>
+                        <label>Quantidade no mes
+                            <input type="number" step="1" name="quantidade_atual_mes"
+                                   value="{{ r.quantidade_atual_mes }}" required>
+                        </label>
+                        <button type="submit">Salvar</button>
+                    </form>
+                </details>
                 <form method="post" action="{{ url_for('excluir_servico', servico_id=r.id) }}">
                     <button class="excluir" type="submit">excluir</button>
                 </form>
