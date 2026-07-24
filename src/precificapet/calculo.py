@@ -1,8 +1,7 @@
 def calcular_custo_servico(
     aluguel_mensal,
     agua_luz_mensal,
-    dias_abertos_mes,
-    horas_por_dia,
+    quantidade_atendimentos_mes,
     valor_hora_funcionario,
     duracao_servico_min,
     custo_produtos_insumos,
@@ -11,17 +10,18 @@ def calcular_custo_servico(
     """Calcula quanto um atendimento especifico custa de verdade pro negocio,
     e qual seria o preco minimo pra nao dar prejuizo.
 
-    O custo fixo (aluguel + agua/luz) e' rateado proporcionalmente ao TEMPO
-    que o servico ocupa da estrutura: um servico de 90min "usa" 3x mais a
-    loja do que um de 30min, entao paga 3x mais fixo. Por isso dividimos o
-    custo fixo mensal pelas horas totais que o negocio fica aberto no mes,
-    e multiplicamos pela duracao deste servico especifico.
+    O custo fixo (aluguel + agua/luz) e' dividido pela quantidade de
+    atendimentos REALMENTE feitos no mes (nao pelas horas que a loja fica
+    de portas abertas) - um salao mais vazio precisa que cada atendimento
+    pague uma fatia maior do aluguel, um salao mais cheio dilui melhor esse
+    custo. Com um unico tipo de servico na conta (ainda sem o cadastro de
+    varios tipos), isso vira uma divisao simples; a ponderacao por duracao
+    volta a fazer diferenca quando houver mais de um tipo de servico pra
+    comparar entre si.
     """
-    horas_operacao_mes = dias_abertos_mes * horas_por_dia
-    custo_fixo_por_hora = (aluguel_mensal + agua_luz_mensal) / horas_operacao_mes
+    custo_fixo_rateado = (aluguel_mensal + agua_luz_mensal) / quantidade_atendimentos_mes
 
     duracao_horas = duracao_servico_min / 60
-    custo_fixo_rateado = custo_fixo_por_hora * duracao_horas
     custo_mao_de_obra = valor_hora_funcionario * duracao_horas
 
     custo_total = custo_fixo_rateado + custo_mao_de_obra + custo_produtos_insumos

@@ -19,8 +19,7 @@ def main():
     print("-- Custos fixos do negocio (mensais) --")
     aluguel = pedir_numero("Aluguel mensal (R$): ")
     agua_luz = pedir_numero("Agua + luz mensal (R$): ")
-    dias_abertos = pedir_numero("Dias abertos por mes: ")
-    horas_por_dia = pedir_numero("Horas de funcionamento por dia: ")
+    quantidade_atendimentos = pedir_numero("Quantidade de atendimentos por mes (todos os tipos): ")
 
     print("\n-- Este servico especifico --")
     valor_hora_funcionario = pedir_numero("Custo por hora do funcionario (R$): ")
@@ -31,8 +30,7 @@ def main():
     resultado = calcular_custo_servico(
         aluguel_mensal=aluguel,
         agua_luz_mensal=agua_luz,
-        dias_abertos_mes=dias_abertos,
-        horas_por_dia=horas_por_dia,
+        quantidade_atendimentos_mes=quantidade_atendimentos,
         valor_hora_funcionario=valor_hora_funcionario,
         duracao_servico_min=duracao_min,
         custo_produtos_insumos=custo_produtos,

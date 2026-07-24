@@ -15,8 +15,7 @@ def index():
         resultado = calcular_custo_servico(
             aluguel_mensal=float(request.form["aluguel_mensal"]),
             agua_luz_mensal=float(request.form["agua_luz_mensal"]),
-            dias_abertos_mes=float(request.form["dias_abertos_mes"]),
-            horas_por_dia=float(request.form["horas_por_dia"]),
+            quantidade_atendimentos_mes=float(request.form["quantidade_atendimentos_mes"]),
             valor_hora_funcionario=float(request.form["valor_hora_funcionario"]),
             duracao_servico_min=float(request.form["duracao_servico_min"]),
             custo_produtos_insumos=float(request.form["custo_produtos_insumos"]),
